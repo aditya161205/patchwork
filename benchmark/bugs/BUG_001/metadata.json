@@ -3,16 +3,12 @@
   "title": "Percentage coupons produce incorrect order totals",
   "bug_type": "logical_error",
   "difficulty": "medium",
+  "difficulty_score": 2,
   "repo_path": "benchmark/bugs/BUG_001/repo",
   "issue_file": "issue.md",
-  "reference_patch": "reference_patch.diff",
   "failing_tests": [
     "tests/test_discount.py::test_percentage_discount",
     "tests/test_coupon.py::test_percent_coupon_discount",
     "tests/test_checkout.py::test_summary_with_coupon"
-  ],
-  "ground_truth_files": [
-    "ecommerce/discount.py"
-  ],
-  "root_cause_file": "ecommerce/discount.py"
+  ]
 }
