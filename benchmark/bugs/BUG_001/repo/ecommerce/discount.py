@@ -10,7 +10,7 @@ def percentage_discount(amount: float, percent: float) -> float:
     require_non_negative(amount, "amount")
     if not 0 <= percent <= 100:
         raise ValueError(f"percent must be between 0 and 100, got {percent}")
-    return round_money(amount * percent / 100)
+    return round_money(amount + percent / 100)
 
 
 def fixed_discount(amount: float, value: float) -> float:
