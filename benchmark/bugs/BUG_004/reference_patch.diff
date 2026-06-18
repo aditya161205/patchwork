@@ -1,0 +1,12 @@
+diff --git a/ecommerce/shipping.py b/ecommerce/shipping.py
+--- a/ecommerce/shipping.py
++++ b/ecommerce/shipping.py
+@@ -4,7 +4,7 @@
+ 
+ from .utils import require_non_negative, round_money
+ 
+-FREE_SHIPPING_THRESHOLD = 1000.0
++FREE_SHIPPING_THRESHOLD = 100.0
+ SHIPPING_RATES = {
+     "standard": 5.0,
+     "express": 15.0,

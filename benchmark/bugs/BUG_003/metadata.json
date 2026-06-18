@@ -1,0 +1,14 @@
+{
+  "bug_id": "BUG_003",
+  "title": "Checkout crashes while pricing an order",
+  "bug_type": "api_mismatch",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_003/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_checkout.py::test_summary_breakdown",
+    "tests/test_checkout.py::test_summary_with_coupon",
+    "tests/test_checkout.py::test_checkout_creates_paid_order_and_reserves_stock"
+  ]
+}

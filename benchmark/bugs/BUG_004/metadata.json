@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_004",
+  "title": "Standard orders never qualify for free shipping",
+  "bug_type": "dependency_config_bug",
+  "difficulty": "easy",
+  "difficulty_score": 1,
+  "repo_path": "benchmark/bugs/BUG_004/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_shipping.py::test_standard_free_over_threshold"
+  ]
+}

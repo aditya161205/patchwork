@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_005",
+  "title": "Cart subtotal is very slow for large carts",
+  "bug_type": "performance_bug",
+  "difficulty": "hard",
+  "difficulty_score": 3,
+  "repo_path": "benchmark/bugs/BUG_005/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_performance.py::test_subtotal_is_linear"
+  ]
+}

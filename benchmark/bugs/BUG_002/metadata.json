@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_002",
+  "title": "Re-adding a product to the cart overwrites its quantity",
+  "bug_type": "state_bug",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_002/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_cart.py::test_add_same_product_accumulates_quantity"
+  ]
+}

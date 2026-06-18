@@ -1,0 +1,12 @@
+diff --git a/ecommerce/cart.py b/ecommerce/cart.py
+--- a/ecommerce/cart.py
++++ b/ecommerce/cart.py
+@@ -29,7 +29,7 @@
+     def add_item(self, product: Product, quantity: int = 1) -> None:
+         require_positive(quantity, "quantity")
+         if product.product_id in self._items:
+-            self._items[product.product_id].quantity = quantity
++            self._items[product.product_id].quantity += quantity
+         else:
+             self._items[product.product_id] = CartItem(product, quantity)
+ 

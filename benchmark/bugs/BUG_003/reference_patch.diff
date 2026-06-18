@@ -1,0 +1,12 @@
+diff --git a/ecommerce/checkout.py b/ecommerce/checkout.py
+--- a/ecommerce/checkout.py
++++ b/ecommerce/checkout.py
+@@ -53,7 +53,7 @@
+         discount = coupon_discount(coupon, subtotal, today) if coupon else 0.0
+         discounted = apply_discount(subtotal, discount)
+         tax = self._tax.calculate(discounted, region)
+-        shipping = calculate_shipping(discounted, mode=shipping_method)
++        shipping = calculate_shipping(discounted, shipping_method)
+         total = round_money(discounted + tax + shipping)
+         return CheckoutSummary(subtotal, discount, tax, shipping, total)
+ 

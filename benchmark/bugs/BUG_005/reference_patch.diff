@@ -1,0 +1,16 @@
+diff --git a/ecommerce/cart.py b/ecommerce/cart.py
+--- a/ecommerce/cart.py
++++ b/ecommerce/cart.py
+@@ -49,11 +49,7 @@
+         return sum(item.quantity for item in self._items.values())
+ 
+     def subtotal(self) -> float:
+-        items = list(self._items.values())
+-        total = 0.0
+-        for index in range(len(items)):
+-            total = sum(items[i].line_total for i in range(index + 1))
+-        return round_money(total)
++        return round_money(sum(item.line_total for item in self._items.values()))
+ 
+     def is_empty(self) -> bool:
+         return not self._items
