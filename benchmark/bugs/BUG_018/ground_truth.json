@@ -1,0 +1,8 @@
+{
+  "bug_id": "BUG_018",
+  "root_cause_file": "ecommerce/coupon.py",
+  "ground_truth_files": [
+    "ecommerce/coupon.py"
+  ],
+  "reference_patch": "reference_patch.diff"
+}

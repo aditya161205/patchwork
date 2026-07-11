@@ -1,0 +1,13 @@
+{
+  "bug_id": "BUG_006",
+  "title": "Tax calculator uses addition instead of multiplication",
+  "bug_type": "logical_error",
+  "difficulty": "easy",
+  "difficulty_score": 1,
+  "repo_path": "benchmark/bugs/BUG_006/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_tax.py::test_calculate_default_region",
+    "tests/test_tax.py::test_calculate_other_region"
+  ]
+}

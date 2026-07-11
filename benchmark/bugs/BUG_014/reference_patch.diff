@@ -1,0 +1,11 @@
+--- ecommerce/product.py
++++ ecommerce/product.py
+@@ -42,7 +42,7 @@
+ 
+     def search(self, term: str) -> list[Product]:
+         term = term.lower()
+-        return [p for p in self._products.values() if term in p.name]
++        return [p for p in self._products.values() if term in p.name.lower()]
+ 
+     def __len__(self) -> int:
+         return len(self._products)

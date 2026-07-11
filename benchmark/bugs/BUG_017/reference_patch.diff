@@ -1,0 +1,9 @@
+--- ecommerce/shipping.py
++++ ecommerce/shipping.py
+@@ -29,5 +29,5 @@
+     if method == "standard" and subtotal >= FREE_SHIPPING_THRESHOLD:
+         return 0.0
+     base = SHIPPING_RATES[method]
+-    surcharge = weight * WEIGHT_SURCHARGE_PER_KG
++    surcharge = max(0.0, weight - 1.0) * WEIGHT_SURCHARGE_PER_KG
+     return round_money(base + surcharge)

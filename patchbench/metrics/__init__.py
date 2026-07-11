@@ -1,6 +1,19 @@
-"""Metrics package (skeleton).
+"""Evaluation metrics for PatchBench.
 
-Future home of the evaluation metrics (Fix Rate, Hidden Test Pass Rate,
-Regression Rate, Overall Repair Score, ...) used by the Judge. Empty for this
-milestone.
+Provides Fix Rate, Regression Rate, and Overall Repair Score computations
+used by the Judge agent and the final benchmark report.
 """
+
+from patchbench.metrics.scoring import (
+    fix_rate,
+    regression_rate,
+    overall_repair_score,
+    compute_judge_score,
+)
+
+__all__ = [
+    "fix_rate",
+    "regression_rate",
+    "overall_repair_score",
+    "compute_judge_score",
+]

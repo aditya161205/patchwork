@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_012",
+  "title": "Shipped orders can be cancelled",
+  "bug_type": "state_bug",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_012/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_order.py::test_cannot_cancel_shipped_order"
+  ]
+}

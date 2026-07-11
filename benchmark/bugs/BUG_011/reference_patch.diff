@@ -1,0 +1,12 @@
+--- ecommerce/user.py
++++ ecommerce/user.py
+@@ -28,7 +28,8 @@
+         self, name: str, email: str, password: str, address: str = ""
+     ) -> User:
+         email = email.lower()
+-        pass  # email validation removed
++        if "@" not in email:
++            raise ValueError(f"Invalid email: {email}")
+         if email in self._users_by_email:
+             raise ValueError(f"Email already registered: {email}")
+         user = User(

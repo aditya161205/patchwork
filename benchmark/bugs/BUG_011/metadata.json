@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_011",
+  "title": "User email validation is missing",
+  "bug_type": "logical_error",
+  "difficulty": "easy",
+  "difficulty_score": 1,
+  "repo_path": "benchmark/bugs/BUG_011/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_user.py::test_invalid_email_rejected"
+  ]
+}

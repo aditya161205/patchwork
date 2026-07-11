@@ -1,0 +1,11 @@
+--- ecommerce/coupon.py
++++ ecommerce/coupon.py
+@@ -32,7 +32,7 @@
+     today = today or date.today()
+     if coupon.expires_on is not None and today > coupon.expires_on:
+         return False
+-    if order_amount > coupon.min_order:
++    if order_amount < coupon.min_order:
+         return False
+     return True
+ 

@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_013",
+  "title": "Product allows zero price",
+  "bug_type": "logical_error",
+  "difficulty": "easy",
+  "difficulty_score": 1,
+  "repo_path": "benchmark/bugs/BUG_013/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_product.py::test_product_requires_positive_price"
+  ]
+}

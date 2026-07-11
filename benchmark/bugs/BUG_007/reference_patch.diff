@@ -1,0 +1,11 @@
+--- ecommerce/discount.py
++++ ecommerce/discount.py
+@@ -17,7 +17,7 @@
+     """Return a flat discount, never exceeding the amount itself."""
+     require_non_negative(amount, "amount")
+     require_non_negative(value, "value")
+-    return round_money(value)
++    return round_money(min(value, amount))
+ 
+ 
+ def apply_discount(amount: float, discount_value: float) -> float:

@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_014",
+  "title": "Catalog search is case-sensitive",
+  "bug_type": "logical_error",
+  "difficulty": "easy",
+  "difficulty_score": 1,
+  "repo_path": "benchmark/bugs/BUG_014/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_product.py::test_catalog_search_is_case_insensitive"
+  ]
+}

@@ -1,0 +1,8 @@
+--- ecommerce/tax.py
++++ ecommerce/tax.py
+@@ -25,4 +25,4 @@
+ 
+     def calculate(self, amount: float, region: str = "US") -> float:
+         require_non_negative(amount, "amount")
+-        return round_money(amount + self.rate_for(region))
++        return round_money(amount * self.rate_for(region))

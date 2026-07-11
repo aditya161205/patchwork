@@ -1,0 +1,11 @@
+--- ecommerce/inventory.py
++++ ecommerce/inventory.py
+@@ -24,6 +24,8 @@
+     def reserve(self, product_id: str, quantity: int) -> None:
+         """Deduct ``quantity`` from stock, refusing to go negative."""
+         require_non_negative(quantity, "quantity")
++        if not self.is_available(product_id, quantity):
++            raise ValueError(f"Insufficient stock for {product_id}")
+         self._stock[product_id] -= quantity
+ 
+     def restock(self, product_id: str, quantity: int) -> None:

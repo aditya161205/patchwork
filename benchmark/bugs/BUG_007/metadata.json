@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_007",
+  "title": "Fixed discount does not cap at order amount",
+  "bug_type": "logical_error",
+  "difficulty": "easy",
+  "difficulty_score": 1,
+  "repo_path": "benchmark/bugs/BUG_007/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_discount.py::test_fixed_discount_capped_at_amount"
+  ]
+}

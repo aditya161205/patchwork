@@ -1,0 +1,11 @@
+--- ecommerce/order.py
++++ ecommerce/order.py
+@@ -31,6 +31,8 @@
+         self.status = "SHIPPED"
+ 
+     def cancel(self) -> None:
++        if self.status == "SHIPPED":
++            raise ValueError("Cannot cancel a shipped order")
+         self.status = "CANCELLED"
+ 
+ 

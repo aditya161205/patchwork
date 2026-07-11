@@ -1,0 +1,11 @@
+--- ecommerce/product.py
++++ ecommerce/product.py
+@@ -18,7 +18,7 @@
+     product_id: str = field(default_factory=lambda: next_id("PROD"))
+ 
+     def __post_init__(self) -> None:
+-        require_non_negative(self.price, "price")
++        require_positive(self.price, "price")
+         require_non_negative(self.weight, "weight")
+ 
+ 

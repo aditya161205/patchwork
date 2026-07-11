@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_008",
+  "title": "Payment processor accepts zero amount charges",
+  "bug_type": "logical_error",
+  "difficulty": "easy",
+  "difficulty_score": 1,
+  "repo_path": "benchmark/bugs/BUG_008/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_payment.py::test_non_positive_amount_raises"
+  ]
+}

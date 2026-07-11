@@ -1,0 +1,11 @@
+--- ecommerce/payment.py
++++ ecommerce/payment.py
+@@ -30,7 +30,7 @@
+         self._balance_limit = balance_limit
+ 
+     def charge(self, amount: float, method: str = "card") -> PaymentResult:
+-        require_non_negative(amount, "amount")
++        require_positive(amount, "amount")
+         if method not in SUPPORTED_METHODS:
+             raise ValueError(f"Unsupported payment method: {method}")
+         status = "SUCCESS" if amount <= self._balance_limit else "FAILED"

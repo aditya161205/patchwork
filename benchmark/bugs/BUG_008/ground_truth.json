@@ -1,0 +1,8 @@
+{
+  "bug_id": "BUG_008",
+  "root_cause_file": "ecommerce/payment.py",
+  "ground_truth_files": [
+    "ecommerce/payment.py"
+  ],
+  "reference_patch": "reference_patch.diff"
+}

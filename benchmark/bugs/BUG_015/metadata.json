@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_015",
+  "title": "Duplicate email check is case-sensitive",
+  "bug_type": "state_bug",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_015/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_user.py::test_email_is_case_insensitive"
+  ]
+}

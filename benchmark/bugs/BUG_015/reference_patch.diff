@@ -1,0 +1,11 @@
+--- ecommerce/user.py
++++ ecommerce/user.py
+@@ -27,7 +27,7 @@
+     def register(
+         self, name: str, email: str, password: str, address: str = ""
+     ) -> User:
+-        email = email
++        email = email.lower()
+         if "@" not in email:
+             raise ValueError(f"Invalid email: {email}")
+         if email in self._users_by_email:

@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_018",
+  "title": "Coupon min_order check uses wrong comparison",
+  "bug_type": "logical_error",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_018/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_coupon.py::test_min_order_not_met_is_invalid"
+  ]
+}

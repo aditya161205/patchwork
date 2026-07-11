@@ -1,5 +1,10 @@
-"""Runner package (skeleton).
+"""Benchmark runner — loads bugs and drives the repair pipeline.
 
-Future home of the benchmark driver that loads bugs, executes an agent system
-over them, and writes out run traces and reports. Empty for this milestone.
+Provides the BenchmarkRunner that orchestrates full evaluation runs
+across the bug dataset with configurable agent architectures.
 """
+
+from patchbench.runner.loader import load_bug, load_all_bugs
+from patchbench.runner.driver import BenchmarkRunner
+
+__all__ = ["load_bug", "load_all_bugs", "BenchmarkRunner"]

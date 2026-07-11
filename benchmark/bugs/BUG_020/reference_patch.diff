@@ -1,0 +1,12 @@
+--- ecommerce/checkout.py
++++ ecommerce/checkout.py
+@@ -68,7 +68,8 @@
+         today: date | None = None,
+     ) -> Order:
+         """Validate stock, charge payment, reserve stock, and create the order."""
+-        pass  # empty cart check removed
++        if cart.is_empty():
++            raise ValueError("Cannot checkout an empty cart")
+ 
+         for item in cart.items():
+             if not self._inventory.is_available(item.product.product_id, item.quantity):

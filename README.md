@@ -22,7 +22,7 @@ Bug + Repo  ->  Orchestrator  ->  Locator  ->  Orchestrator (route)
 
 ```
 patchbench/
-  schemas/        Typed data contracts shared by every agent  <- implemented
+  schemas/        Typed data contracts shared by every agent
     enums.py        BugType, Difficulty, Complexity, FixerType, CheckStatus, RunStatus
     bug.py          Bug                       (benchmark task / pipeline input)
     locator.py      LocatorOutput, CandidateFile, CandidateFunction
@@ -31,17 +31,19 @@ patchbench/
     judge.py        JudgeOutput
     trace.py        RunTrace                  (full end-to-end run record)
     baseline.py     SingleAgentOutput
-  agents/         Orchestrator, Locator, Fixers, Validator, Judge   (skeleton)
-  tools/          RepoSearch, FileRead, TestRunner, ...              (skeleton)
-  baselines/      Single-Agent & Chain baselines                    (skeleton)
-  metrics/        Fix Rate, Regression Rate, Overall Repair Score    (skeleton)
-  runner/         Benchmark driver                                  (skeleton)
-benchmark/        The 20-bug v1 dataset                             (skeleton)
-tests/            Unit tests
+  agents/         Orchestrator, Locator, Fixers, Validator, Judge
+  tools/          RepoSearch, FileRead, TestRunner, Linter, StaticAnalysis
+  baselines/      Single-Agent & Chain baselines
+  metrics/        Fix Rate, Regression Rate, Overall Repair Score
+  runner/         Benchmark driver + dataset loader
+  cli.py          Command-line interface
+benchmark/
+  repos/          Clean reference repositories
+  bugs/           The 20-bug v1 dataset (BUG_001 through BUG_020)
+tests/            Unit tests (57 tests)
 ```
 
-Schemas are built first because every later milestone communicates through
-them. All schemas use **Pydantic v2** for runtime validation (confidence scores
+All schemas use **Pydantic v2** for runtime validation (confidence scores
 constrained to `[0, 1]`, non-negative counts, closed enum vocabularies) and
 clean JSON (de)serialization.
 
@@ -53,12 +55,38 @@ pip install -e ".[dev]"
 pytest
 ```
 
+## Running the benchmark
+
+```bash
+# Run all architectures
+patchbench --benchmark-dir benchmark
+
+# Run a specific architecture
+patchbench --architecture multi_agent --output results.json
+
+# Options: multi_agent, chain, single_agent, all
+```
+
+## Bug categories
+
+The 20-bug dataset covers all 7 bug types:
+- **logical_error** (10 bugs): wrong operators, incorrect conditions
+- **state_bug** (5 bugs): overwrites, missing guards, mutation errors
+- **api_mismatch** (1 bug): wrong argument passing style
+- **dependency_config_bug** (1 bug): incorrect threshold constants
+- **performance_bug** (1 bug): quadratic algorithms
+- **syntax_error**: available via the pipeline (no dataset examples yet)
+- **test_failure**: available via the pipeline (no dataset examples yet)
+
 ## Status
 
 | Milestone | State |
 |---|---|
 | Repo skeleton + schema models | done |
-| Dataset (20 bugs) | planned |
-| Single-Agent baseline | planned |
-| Chain baseline | planned |
-| Multi-Agent system | planned |
+| Dataset (20 bugs) | done |
+| Tools (FileRead, Search, TestRunner, Lint) | done |
+| Metrics (Fix Rate, Regression, Score) | done |
+| Single-Agent baseline | done |
+| Chain baseline | done |
+| Multi-Agent system | done |
+| CLI runner | done |

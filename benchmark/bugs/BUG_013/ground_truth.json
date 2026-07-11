@@ -1,0 +1,8 @@
+{
+  "bug_id": "BUG_013",
+  "root_cause_file": "ecommerce/product.py",
+  "ground_truth_files": [
+    "ecommerce/product.py"
+  ],
+  "reference_patch": "reference_patch.diff"
+}

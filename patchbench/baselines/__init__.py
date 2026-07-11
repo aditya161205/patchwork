@@ -1,5 +1,10 @@
-"""Baselines package (skeleton).
+"""Baseline systems for comparison against the multi-agent pipeline.
 
-Future home of the Single-Agent and Chain-Based baselines that the multi-agent
-system is benchmarked against. Empty for this milestone.
+- SingleAgentBaseline: One-shot repair with no localization or routing
+- ChainBaseline: Sequential pipeline without specialized routing
 """
+
+from patchbench.baselines.single_agent import SingleAgentBaseline
+from patchbench.baselines.chain import ChainBaseline
+
+__all__ = ["SingleAgentBaseline", "ChainBaseline"]

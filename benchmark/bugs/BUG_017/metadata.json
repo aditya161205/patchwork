@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_017",
+  "title": "Weight surcharge calculation is wrong",
+  "bug_type": "logical_error",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_017/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_shipping.py::test_weight_surcharge"
+  ]
+}

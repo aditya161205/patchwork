@@ -17,6 +17,9 @@ dev = [
     "pytest>=7.4",
 ]
 
+[project.scripts]
+patchbench = "patchbench.cli:main"
+
 [tool.setuptools.packages.find]
 include = ["patchbench*"]
 

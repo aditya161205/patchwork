@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_016",
+  "title": "Express shipping is incorrectly free over threshold",
+  "bug_type": "logical_error",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_016/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_shipping.py::test_express_not_free_over_threshold"
+  ]
+}

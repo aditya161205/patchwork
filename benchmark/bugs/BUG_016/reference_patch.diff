@@ -1,0 +1,11 @@
+--- ecommerce/shipping.py
++++ ecommerce/shipping.py
+@@ -26,7 +26,7 @@
+     require_non_negative(weight, "weight")
+     if method not in SHIPPING_RATES:
+         raise ValueError(f"Unknown shipping method: {method}")
+-    if subtotal >= FREE_SHIPPING_THRESHOLD:
++    if method == "standard" and subtotal >= FREE_SHIPPING_THRESHOLD:
+         return 0.0
+     base = SHIPPING_RATES[method]
+     surcharge = max(0.0, weight - 1.0) * WEIGHT_SURCHARGE_PER_KG

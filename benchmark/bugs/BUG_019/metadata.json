@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_019",
+  "title": "Expired coupon check uses wrong comparison operator",
+  "bug_type": "logical_error",
+  "difficulty": "easy",
+  "difficulty_score": 1,
+  "repo_path": "benchmark/bugs/BUG_019/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_coupon.py::test_expired_coupon_is_invalid"
+  ]
+}

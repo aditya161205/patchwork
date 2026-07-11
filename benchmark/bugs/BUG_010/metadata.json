@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_010",
+  "title": "Inventory reserve does not check stock availability",
+  "bug_type": "state_bug",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_010/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_inventory.py::test_reserve_insufficient_raises"
+  ]
+}

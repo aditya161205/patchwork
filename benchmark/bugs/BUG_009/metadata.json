@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_009",
+  "title": "Order total calculation adds discount instead of subtracting",
+  "bug_type": "logical_error",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_009/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_order.py::test_total_is_subtotal_minus_discount_plus_tax_and_shipping"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "bug_id": "BUG_020",
+  "title": "Checkout does not reject empty cart",
+  "bug_type": "state_bug",
+  "difficulty": "medium",
+  "difficulty_score": 2,
+  "repo_path": "benchmark/bugs/BUG_020/repo",
+  "issue_file": "issue.md",
+  "failing_tests": [
+    "tests/test_checkout.py::test_checkout_empty_cart_raises"
+  ]
+}

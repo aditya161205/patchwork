@@ -1,0 +1,11 @@
+--- ecommerce/order.py
++++ ecommerce/order.py
+@@ -45,7 +45,7 @@
+     shipping: float,
+ ) -> Order:
+     """Build an order, computing the grand total from its components."""
+-    total = round_money(subtotal + discount + tax + shipping)
++    total = round_money(subtotal - discount + tax + shipping)
+     return Order(
+         user_id=user_id,
+         items=list(items),
