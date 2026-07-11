@@ -1,0 +1,18 @@
+{
+  "architecture": "single_agent",
+  "total_bugs": 20,
+  "bugs_fixed": 0,
+  "fix_rate": 0.0,
+  "avg_score": 1.5,
+  "total_runtime": 4.8,
+  "metrics": {
+    "fix_rate": 0.0,
+    "overall_repair_score": 1.5,
+    "avg_runtime": 0.2405,
+    "avg_patch_size": 0.0,
+    "avg_token_usage": 0.0,
+    "total_regressions": 0,
+    "avg_files_modified": 0.0
+  },
+  "traces": []
+}

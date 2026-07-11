@@ -1,0 +1,74 @@
+{
+  "run_id": "run_e284af48",
+  "bug_id": "BUG_008",
+  "bug_type": "logical_error",
+  "complexity": "simple",
+  "selected_fixer": "LogicFixer",
+  "tool_calls": 8,
+  "subagents_spawned": 3,
+  "locator_output": {
+    "bug_id": "BUG_008",
+    "candidate_files": [
+      {
+        "file": "ecommerce/discount.py",
+        "confidence": 1.0
+      },
+      {
+        "file": "ecommerce/payment.py",
+        "confidence": 0.9230769230769231
+      },
+      {
+        "file": "ecommerce/checkout.py",
+        "confidence": 0.7692307692307693
+      },
+      {
+        "file": "ecommerce/coupon.py",
+        "confidence": 0.5384615384615384
+      },
+      {
+        "file": "ecommerce/utils.py",
+        "confidence": 0.3076923076923077
+      }
+    ],
+    "candidate_functions": [],
+    "reasoning": "Bug 'Payment processor accepts zero amount charges' (type=logical_error). Top file candidates: ecommerce/discount.py, ecommerce/payment.py, ecommerce/checkout.py."
+  },
+  "fixer_output": {
+    "bug_id": "BUG_008",
+    "fixer_type": "LogicFixer",
+    "files_modified": [
+      "ecommerce/discount.py"
+    ],
+    "patch": "",
+    "confidence": 0.75,
+    "root_cause": "Logical error in computation",
+    "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+  },
+  "validator_output": {
+    "bug_id": "BUG_008",
+    "validation_status": "FAIL",
+    "tests_before": {
+      "passed": 52,
+      "failed": 5
+    },
+    "tests_after": {
+      "passed": 52,
+      "failed": 5
+    },
+    "lint_status": "PASS",
+    "static_analysis_status": "PASS",
+    "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 52/52 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+  },
+  "judge_output": {
+    "bug_id": "BUG_008",
+    "fix_rate": 0.0,
+    "runtime_seconds": 1.7,
+    "token_usage": 0,
+    "files_modified": 1,
+    "patch_size_lines": 0,
+    "regressions": 0,
+    "judge_score": 4.0,
+    "status": "FAILURE"
+  },
+  "final_status": "FAILURE"
+}

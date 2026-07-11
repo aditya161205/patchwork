@@ -1,0 +1,74 @@
+{
+  "run_id": "run_3ad6ea51",
+  "bug_id": "BUG_003",
+  "bug_type": "api_mismatch",
+  "complexity": "simple",
+  "selected_fixer": "APIFixer",
+  "tool_calls": 4,
+  "subagents_spawned": 3,
+  "locator_output": {
+    "bug_id": "BUG_003",
+    "candidate_files": [
+      {
+        "file": "ecommerce/checkout.py",
+        "confidence": 1.0
+      },
+      {
+        "file": "ecommerce/coupon.py",
+        "confidence": 0.42105263157894735
+      },
+      {
+        "file": "ecommerce/order.py",
+        "confidence": 0.2631578947368421
+      },
+      {
+        "file": "ecommerce/__init__.py",
+        "confidence": 0.15789473684210525
+      },
+      {
+        "file": "ecommerce/shipping.py",
+        "confidence": 0.05263157894736842
+      }
+    ],
+    "candidate_functions": [],
+    "reasoning": "Bug 'Checkout crashes while pricing an order' (type=api_mismatch). Top file candidates: ecommerce/checkout.py, ecommerce/coupon.py, ecommerce/order.py."
+  },
+  "fixer_output": {
+    "bug_id": "BUG_003",
+    "fixer_type": "APIFixer",
+    "files_modified": [
+      "ecommerce/checkout.py"
+    ],
+    "patch": "--- a/ecommerce/checkout.py\n+++ b/ecommerce/checkout.py\n@@ -53,7 +53,7 @@\n         discount = coupon_discount(coupon, subtotal, today) if coupon else 0.0\n         discounted = apply_discount(subtotal, discount)\n         tax = self._tax.calculate(discounted, region)\n-        shipping = calculate_shipping(discounted, mode=shipping_method)\n+        shipping = calculate_shipping(discounted, shipping_method)\n         total = round_money(discounted + tax + shipping)\n         return CheckoutSummary(subtotal, discount, tax, shipping, total)\n \n",
+    "confidence": 0.7,
+    "root_cause": "Used keyword argument 'mode=' where positional argument expected",
+    "explanation": "Fixed API call to match the expected function signature."
+  },
+  "validator_output": {
+    "bug_id": "BUG_003",
+    "validation_status": "PASS",
+    "tests_before": {
+      "passed": 54,
+      "failed": 3
+    },
+    "tests_after": {
+      "passed": 57,
+      "failed": 0
+    },
+    "lint_status": "PASS",
+    "static_analysis_status": "PASS",
+    "validation_report": "Verdict: PASS\nPatch applied: True\nFail-to-pass: 3/3 (100%)\nPass-to-pass: 54/54 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+  },
+  "judge_output": {
+    "bug_id": "BUG_003",
+    "fix_rate": 1.0,
+    "runtime_seconds": 1.11,
+    "token_usage": 0,
+    "files_modified": 1,
+    "patch_size_lines": 11,
+    "regressions": 0,
+    "judge_score": 9.5,
+    "status": "SUCCESS"
+  },
+  "final_status": "SUCCESS"
+}

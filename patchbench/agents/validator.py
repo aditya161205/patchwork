@@ -1,24 +1,32 @@
-"""Validator agent — applies patches and runs tests to verify fixes."""
+"""Validator agent — verifies fixes in a sandboxed environment.
+
+Uses the full verifier pipeline: sandbox isolation, fail-to-pass analysis,
+regression detection, lint, static analysis, and cheat detection.
+"""
 
 from __future__ import annotations
 
 from patchbench.schemas import Bug, FixerOutput, ValidatorOutput, TestResults
 from patchbench.schemas.enums import CheckStatus
-from patchbench.tools.test_runner import run_tests
-from patchbench.tools.patch_apply import apply_patch, revert_patch
-from patchbench.tools.linter import run_lint
-from patchbench.tools.static_analysis import run_static_analysis
+from patchbench.tools.verifier import verify_patch, VerificationResult
+from patchbench.tools.cheat_detector import is_clean
 
 
 class Validator:
-    """Validates a proposed patch by running tests before and after application.
+    """Validates a proposed patch using sandboxed execution.
 
     The Validator:
-    1. Runs tests on the original (buggy) code to get baseline counts
-    2. Applies the patch
-    3. Runs tests again to see if the fix works
-    4. Runs lint and static analysis checks
-    5. Reports an overall PASS/FAIL verdict
+    1. Copies the repo to a temp directory (sandbox)
+    2. Runs failing tests to confirm they fail (baseline)
+    3. Runs all tests to get pass-to-pass baseline
+    4. Applies the patch in the sandbox
+    5. Runs failing tests again (fail-to-pass check)
+    6. Runs all tests again (regression detection)
+    7. Runs lint and static analysis
+    8. Checks for cheating (test-file edits, hardcoded values)
+    9. Reports verdict: PASS / FAIL / CHEATED
+
+    The original repository is NEVER modified.
     """
 
     def __init__(self, timeout: int = 60) -> None:
@@ -30,42 +38,38 @@ class Validator:
         fixer_output: FixerOutput,
         repo_path: str,
     ) -> ValidatorOutput:
-        """Run validation pipeline on a proposed fix."""
-        # Run tests before patch
-        before_result = run_tests(repo_path, bug.failing_tests, timeout=self.timeout)
-        tests_before = TestResults(passed=before_result.passed, failed=before_result.failed)
+        """Run full sandboxed validation pipeline on a proposed fix."""
+        # Run cheat check first (fast, no sandbox needed)
+        patch = fixer_output.patch
+        clean = is_clean(patch, bug.failing_tests)
 
-        # Apply patch
-        patch_applied = False
-        if fixer_output.patch:
-            patch_applied = apply_patch(repo_path, fixer_output.patch)
-
-        # Run tests after patch
-        if patch_applied:
-            after_result = run_tests(repo_path, timeout=self.timeout)
-            tests_after = TestResults(passed=after_result.passed, failed=after_result.failed)
-        else:
-            tests_after = tests_before
-
-        # Lint check
-        lint_result = run_lint(repo_path, fixer_output.files_modified or None)
-        lint_status = CheckStatus.PASS if lint_result.passed else CheckStatus.FAIL
-
-        # Static analysis
-        sa_result = run_static_analysis(repo_path, fixer_output.files_modified or None)
-        sa_status = CheckStatus.PASS if sa_result.passed else CheckStatus.FAIL
-
-        # Overall verdict
-        tests_pass = tests_after.failed == 0
-        validation_status = CheckStatus.PASS if (tests_pass and patch_applied) else CheckStatus.FAIL
-
-        # Revert patch to restore original state
-        if patch_applied:
-            revert_patch(repo_path, fixer_output.patch)
-
-        report = self._build_report(
-            patch_applied, tests_before, tests_after, lint_result.issues, sa_result.issues
+        # Run full verification in sandbox
+        result = verify_patch(
+            repo_path=repo_path,
+            patch=patch,
+            failing_tests=bug.failing_tests,
+            timeout=self.timeout,
         )
+
+        # Map to schema
+        tests_before = TestResults(
+            passed=result.tests_before_passed,
+            failed=result.tests_before_failed,
+        )
+        tests_after = TestResults(
+            passed=result.tests_after_passed,
+            failed=result.tests_after_failed,
+        )
+
+        lint_status = CheckStatus.PASS if result.lint_passed else CheckStatus.FAIL
+        sa_status = CheckStatus.PASS if result.static_analysis_passed else CheckStatus.FAIL
+
+        if result.verdict == "PASS":
+            validation_status = CheckStatus.PASS
+        else:
+            validation_status = CheckStatus.FAIL
+
+        report = self._build_report(result)
 
         return ValidatorOutput(
             bug_id=bug.bug_id,
@@ -77,21 +81,23 @@ class Validator:
             validation_report=report,
         )
 
-    def _build_report(
-        self,
-        patch_applied: bool,
-        tests_before: TestResults,
-        tests_after: TestResults,
-        lint_issues: list[str],
-        sa_issues: list[str],
-    ) -> str:
+    def _build_report(self, result: VerificationResult) -> str:
         parts = []
-        if not patch_applied:
-            parts.append("PATCH APPLICATION FAILED")
-        parts.append(f"Tests before: {tests_before.passed} passed, {tests_before.failed} failed")
-        parts.append(f"Tests after: {tests_after.passed} passed, {tests_after.failed} failed")
-        if lint_issues:
-            parts.append(f"Lint issues: {'; '.join(lint_issues[:5])}")
-        if sa_issues:
-            parts.append(f"Static analysis issues: {'; '.join(sa_issues[:5])}")
+        parts.append(f"Verdict: {result.verdict}")
+        parts.append(f"Patch applied: {result.patch_applied}")
+        parts.append(
+            f"Fail-to-pass: {result.fail_to_pass_resolved}/{result.fail_to_pass_total} "
+            f"({result.fail_to_pass_rate:.0%})"
+        )
+        parts.append(
+            f"Pass-to-pass: {result.pass_to_pass_maintained}/{result.pass_to_pass_total} "
+            f"({result.pass_to_pass_rate:.0%})"
+        )
+        parts.append(f"Regressions: {result.regressions}")
+        parts.append(f"Lint: {'PASS' if result.lint_passed else 'FAIL'}")
+        parts.append(f"Static analysis: {'PASS' if result.static_analysis_passed else 'FAIL'}")
+        if result.cheat_flags:
+            parts.append(f"Cheat flags: {len(result.cheat_flags)}")
+            for flag in result.cheat_flags:
+                parts.append(f"  [{flag.severity}] {flag.rule}: {flag.description}")
         return "\n".join(parts)

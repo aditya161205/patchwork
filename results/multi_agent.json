@@ -1,0 +1,1416 @@
+{
+  "architecture": "multi_agent",
+  "total_bugs": 20,
+  "bugs_fixed": 1,
+  "fix_rate": 0.05,
+  "avg_score": 4.225,
+  "total_runtime": 35.08,
+  "metrics": {
+    "fix_rate": 0.05,
+    "overall_repair_score": 4.225,
+    "avg_runtime": 1.754,
+    "avg_patch_size": 1.55,
+    "avg_token_usage": 0.0,
+    "total_regressions": 0,
+    "avg_files_modified": 1.0
+  },
+  "traces": [
+    {
+      "run_id": "run_e3b959c2",
+      "bug_id": "BUG_001",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_001",
+        "candidate_files": [
+          {
+            "file": "ecommerce/coupon.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.7142857142857143
+          },
+          {
+            "file": "ecommerce/discount.py",
+            "confidence": 0.42857142857142855
+          },
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 0.35714285714285715
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.2857142857142857
+          }
+        ],
+        "candidate_functions": [
+          {
+            "function": "percentage_discount",
+            "confidence": 1.0
+          }
+        ],
+        "reasoning": "Bug 'Percentage coupons produce incorrect order totals' (type=logical_error). Top file candidates: ecommerce/coupon.py, ecommerce/checkout.py, ecommerce/discount.py. Top function candidates: percentage_discount."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_001",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/coupon.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_001",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 54,
+          "failed": 3
+        },
+        "tests_after": {
+          "passed": 54,
+          "failed": 3
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/3 (0%)\nPass-to-pass: 54/54 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_001",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.91,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_55c1a280",
+      "bug_id": "BUG_002",
+      "bug_type": "state_bug",
+      "complexity": "simple",
+      "selected_fixer": "StateFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_002",
+        "candidate_files": [
+          {
+            "file": "ecommerce/cart.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/inventory.py",
+            "confidence": 0.8181818181818182
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.5151515151515151
+          },
+          {
+            "file": "ecommerce/product.py",
+            "confidence": 0.3939393939393939
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.06060606060606061
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Re-adding a product to the cart overwrites its quantity' (type=state_bug). Top file candidates: ecommerce/cart.py, ecommerce/inventory.py, ecommerce/checkout.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_002",
+        "fixer_type": "StateFixer",
+        "files_modified": [
+          "ecommerce/cart.py"
+        ],
+        "patch": "--- a/ecommerce/cart.py\n+++ b/ecommerce/cart.py\n@@ -29,7 +29,7 @@\n     def add_item(self, product: Product, quantity: int = 1) -> None:\n         require_positive(quantity, \"quantity\")\n         if product.product_id in self._items:\n-            self._items[product.product_id].quantity = quantity\n+            self._items[product.product_id].quantity += quantity\n         else:\n             self._items[product.product_id] = CartItem(product, quantity)\n \n@@ -40,7 +40,7 @@\n         require_positive(quantity, \"quantity\")\n         if product_id not in self._items:\n             raise KeyError(f\"Product not in cart: {product_id}\")\n-        self._items[product_id].quantity = quantity\n+        self._items[product_id].quantity += quantity\n \n     def items(self) -> list[CartItem]:\n         return list(self._items.values())\n",
+        "confidence": 0.7,
+        "root_cause": "Assignment overwrites state instead of accumulating",
+        "explanation": "Fixed state mutation to correctly accumulate rather than overwrite."
+      },
+      "validator_output": {
+        "bug_id": "BUG_002",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: True\nFail-to-pass: 1/1 (100%)\nPass-to-pass: 55/56 (98%)\nRegressions: 1\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_002",
+        "fix_rate": 0.0,
+        "runtime_seconds": 3.2,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 20,
+        "regressions": 0,
+        "judge_score": 3.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_3ad6ea51",
+      "bug_id": "BUG_003",
+      "bug_type": "api_mismatch",
+      "complexity": "simple",
+      "selected_fixer": "APIFixer",
+      "tool_calls": 4,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_003",
+        "candidate_files": [
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/coupon.py",
+            "confidence": 0.42105263157894735
+          },
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 0.2631578947368421
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.15789473684210525
+          },
+          {
+            "file": "ecommerce/shipping.py",
+            "confidence": 0.05263157894736842
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Checkout crashes while pricing an order' (type=api_mismatch). Top file candidates: ecommerce/checkout.py, ecommerce/coupon.py, ecommerce/order.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_003",
+        "fixer_type": "APIFixer",
+        "files_modified": [
+          "ecommerce/checkout.py"
+        ],
+        "patch": "--- a/ecommerce/checkout.py\n+++ b/ecommerce/checkout.py\n@@ -53,7 +53,7 @@\n         discount = coupon_discount(coupon, subtotal, today) if coupon else 0.0\n         discounted = apply_discount(subtotal, discount)\n         tax = self._tax.calculate(discounted, region)\n-        shipping = calculate_shipping(discounted, mode=shipping_method)\n+        shipping = calculate_shipping(discounted, shipping_method)\n         total = round_money(discounted + tax + shipping)\n         return CheckoutSummary(subtotal, discount, tax, shipping, total)\n \n",
+        "confidence": 0.7,
+        "root_cause": "Used keyword argument 'mode=' where positional argument expected",
+        "explanation": "Fixed API call to match the expected function signature."
+      },
+      "validator_output": {
+        "bug_id": "BUG_003",
+        "validation_status": "PASS",
+        "tests_before": {
+          "passed": 54,
+          "failed": 3
+        },
+        "tests_after": {
+          "passed": 57,
+          "failed": 0
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: PASS\nPatch applied: True\nFail-to-pass: 3/3 (100%)\nPass-to-pass: 54/54 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_003",
+        "fix_rate": 1.0,
+        "runtime_seconds": 1.11,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 11,
+        "regressions": 0,
+        "judge_score": 9.5,
+        "status": "SUCCESS"
+      },
+      "final_status": "SUCCESS"
+    },
+    {
+      "run_id": "run_28d6492b",
+      "bug_id": "BUG_004",
+      "bug_type": "dependency_config_bug",
+      "complexity": "simple",
+      "selected_fixer": "ConfigFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_004",
+        "candidate_files": [
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/shipping.py",
+            "confidence": 0.9166666666666666
+          },
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 0.3333333333333333
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.25
+          },
+          {
+            "file": "ecommerce/discount.py",
+            "confidence": 0.08333333333333333
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Standard orders never qualify for free shipping' (type=dependency_config_bug). Top file candidates: ecommerce/checkout.py, ecommerce/shipping.py, ecommerce/order.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_004",
+        "fixer_type": "ConfigFixer",
+        "files_modified": [
+          "ecommerce/checkout.py"
+        ],
+        "patch": "",
+        "confidence": 0.7,
+        "root_cause": "Incorrect configuration value",
+        "explanation": "Adjusted configuration constant to correct value."
+      },
+      "validator_output": {
+        "bug_id": "BUG_004",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_004",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.68,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_86f16c20",
+      "bug_id": "BUG_005",
+      "bug_type": "performance_bug",
+      "complexity": "complex",
+      "selected_fixer": "PerformanceFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_005",
+        "candidate_files": [
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/cart.py",
+            "confidence": 0.2631578947368421
+          },
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 0.2631578947368421
+          },
+          {
+            "file": "ecommerce/shipping.py",
+            "confidence": 0.2631578947368421
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.05263157894736842
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Cart subtotal is very slow for large carts' (type=performance_bug). Top file candidates: ecommerce/checkout.py, ecommerce/cart.py, ecommerce/order.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_005",
+        "fixer_type": "PerformanceFixer",
+        "files_modified": [
+          "ecommerce/checkout.py"
+        ],
+        "patch": "",
+        "confidence": 0.65,
+        "root_cause": "Performance issue",
+        "explanation": "Replaced quadratic algorithm with linear approach."
+      },
+      "validator_output": {
+        "bug_id": "BUG_005",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 57,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 57,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 57/57 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_005",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.73,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_6c9b696e",
+      "bug_id": "BUG_006",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_006",
+        "candidate_files": [
+          {
+            "file": "ecommerce/tax.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.3333333333333333
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Tax calculator uses addition instead of multiplication' (type=logical_error). Top file candidates: ecommerce/tax.py, ecommerce/checkout.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_006",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/tax.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_006",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 50,
+          "failed": 7
+        },
+        "tests_after": {
+          "passed": 50,
+          "failed": 7
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/2 (0%)\nPass-to-pass: 50/50 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_006",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.74,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_fc2e81c6",
+      "bug_id": "BUG_007",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_007",
+        "candidate_files": [
+          {
+            "file": "ecommerce/coupon.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/discount.py",
+            "confidence": 0.92
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.72
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.4
+          },
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 0.36
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Fixed discount does not cap at order amount' (type=logical_error). Top file candidates: ecommerce/coupon.py, ecommerce/discount.py, ecommerce/checkout.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_007",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/coupon.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_007",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_007",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.67,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_e284af48",
+      "bug_id": "BUG_008",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_008",
+        "candidate_files": [
+          {
+            "file": "ecommerce/discount.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/payment.py",
+            "confidence": 0.9230769230769231
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.7692307692307693
+          },
+          {
+            "file": "ecommerce/coupon.py",
+            "confidence": 0.5384615384615384
+          },
+          {
+            "file": "ecommerce/utils.py",
+            "confidence": 0.3076923076923077
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Payment processor accepts zero amount charges' (type=logical_error). Top file candidates: ecommerce/discount.py, ecommerce/payment.py, ecommerce/checkout.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_008",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/discount.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_008",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 52,
+          "failed": 5
+        },
+        "tests_after": {
+          "passed": 52,
+          "failed": 5
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 52/52 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_008",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.7,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_a212af0a",
+      "bug_id": "BUG_009",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_009",
+        "candidate_files": [
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 0.6785714285714286
+          },
+          {
+            "file": "ecommerce/coupon.py",
+            "confidence": 0.5
+          },
+          {
+            "file": "ecommerce/discount.py",
+            "confidence": 0.32142857142857145
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.2857142857142857
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Order total calculation adds discount instead of subtracting' (type=logical_error). Top file candidates: ecommerce/checkout.py, ecommerce/order.py, ecommerce/coupon.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_009",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/checkout.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Used addition instead of multiplication for percentage calculation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_009",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_009",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.68,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_e362300f",
+      "bug_id": "BUG_010",
+      "bug_type": "state_bug",
+      "complexity": "simple",
+      "selected_fixer": "StateFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_010",
+        "candidate_files": [
+          {
+            "file": "ecommerce/inventory.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.8
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.13333333333333333
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Inventory reserve does not check stock availability' (type=state_bug). Top file candidates: ecommerce/inventory.py, ecommerce/checkout.py, ecommerce/__init__.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_010",
+        "fixer_type": "StateFixer",
+        "files_modified": [
+          "ecommerce/inventory.py"
+        ],
+        "patch": "",
+        "confidence": 0.7,
+        "root_cause": "Incorrect state mutation",
+        "explanation": "Fixed state mutation to correctly accumulate rather than overwrite."
+      },
+      "validator_output": {
+        "bug_id": "BUG_010",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_010",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.68,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_c6f82e33",
+      "bug_id": "BUG_011",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_011",
+        "candidate_files": [
+          {
+            "file": "ecommerce/user.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 0.10344827586206896
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.06896551724137931
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.034482758620689655
+          },
+          {
+            "file": "ecommerce/coupon.py",
+            "confidence": 0.034482758620689655
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'User email validation is missing' (type=logical_error). Top file candidates: ecommerce/user.py, ecommerce/order.py, ecommerce/checkout.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_011",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/user.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_011",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_011",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.66,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_0ebba62d",
+      "bug_id": "BUG_012",
+      "bug_type": "state_bug",
+      "complexity": "simple",
+      "selected_fixer": "StateFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_012",
+        "candidate_files": [
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 1.0
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Shipped orders can be cancelled' (type=state_bug). Top file candidates: ecommerce/order.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_012",
+        "fixer_type": "StateFixer",
+        "files_modified": [
+          "ecommerce/order.py"
+        ],
+        "patch": "",
+        "confidence": 0.7,
+        "root_cause": "Incorrect state mutation",
+        "explanation": "Fixed state mutation to correctly accumulate rather than overwrite."
+      },
+      "validator_output": {
+        "bug_id": "BUG_012",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_012",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.67,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_2aff31a3",
+      "bug_id": "BUG_013",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_013",
+        "candidate_files": [
+          {
+            "file": "ecommerce/product.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/cart.py",
+            "confidence": 0.8888888888888888
+          },
+          {
+            "file": "ecommerce/inventory.py",
+            "confidence": 0.7777777777777778
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.2222222222222222
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.05555555555555555
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Product allows zero price' (type=logical_error). Top file candidates: ecommerce/product.py, ecommerce/cart.py, ecommerce/inventory.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_013",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/product.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_013",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_013",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.68,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_97521d21",
+      "bug_id": "BUG_014",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_014",
+        "candidate_files": [
+          {
+            "file": "ecommerce/product.py",
+            "confidence": 1.0
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Catalog search is case-sensitive' (type=logical_error). Top file candidates: ecommerce/product.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_014",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/product.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_014",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_014",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.66,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_21fa14ef",
+      "bug_id": "BUG_015",
+      "bug_type": "state_bug",
+      "complexity": "simple",
+      "selected_fixer": "StateFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_015",
+        "candidate_files": [
+          {
+            "file": "ecommerce/user.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.1111111111111111
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.05555555555555555
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Duplicate email check is case-sensitive' (type=state_bug). Top file candidates: ecommerce/user.py, ecommerce/checkout.py, ecommerce/__init__.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_015",
+        "fixer_type": "StateFixer",
+        "files_modified": [
+          "ecommerce/user.py"
+        ],
+        "patch": "",
+        "confidence": 0.7,
+        "root_cause": "Incorrect state mutation",
+        "explanation": "Fixed state mutation to correctly accumulate rather than overwrite."
+      },
+      "validator_output": {
+        "bug_id": "BUG_015",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_015",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.68,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_aaecc24a",
+      "bug_id": "BUG_016",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_016",
+        "candidate_files": [
+          {
+            "file": "ecommerce/shipping.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.9090909090909091
+          },
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 0.36363636363636365
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.2727272727272727
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Express shipping is incorrectly free over threshold' (type=logical_error). Top file candidates: ecommerce/shipping.py, ecommerce/checkout.py, ecommerce/order.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_016",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/shipping.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_016",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_016",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.68,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_0861a04d",
+      "bug_id": "BUG_017",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_017",
+        "candidate_files": [
+          {
+            "file": "ecommerce/shipping.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/product.py",
+            "confidence": 0.2
+          },
+          {
+            "file": "ecommerce/discount.py",
+            "confidence": 0.1
+          },
+          {
+            "file": "ecommerce/tax.py",
+            "confidence": 0.1
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Weight surcharge calculation is wrong' (type=logical_error). Top file candidates: ecommerce/shipping.py, ecommerce/product.py, ecommerce/discount.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_017",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/shipping.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_017",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 51,
+          "failed": 6
+        },
+        "tests_after": {
+          "passed": 51,
+          "failed": 6
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 51/51 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_017",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.81,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_263038d8",
+      "bug_id": "BUG_018",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_018",
+        "candidate_files": [
+          {
+            "file": "ecommerce/coupon.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.4117647058823529
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.17647058823529413
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Coupon min_order check uses wrong comparison' (type=logical_error). Top file candidates: ecommerce/coupon.py, ecommerce/checkout.py, ecommerce/__init__.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_018",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/coupon.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_018",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 53,
+          "failed": 4
+        },
+        "tests_after": {
+          "passed": 53,
+          "failed": 4
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 53/53 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_018",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.71,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_e3fd8d52",
+      "bug_id": "BUG_019",
+      "bug_type": "logical_error",
+      "complexity": "simple",
+      "selected_fixer": "LogicFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_019",
+        "candidate_files": [
+          {
+            "file": "ecommerce/coupon.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 0.4666666666666667
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.2
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Expired coupon check uses wrong comparison operator' (type=logical_error). Top file candidates: ecommerce/coupon.py, ecommerce/checkout.py, ecommerce/__init__.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_019",
+        "fixer_type": "LogicFixer",
+        "files_modified": [
+          "ecommerce/coupon.py"
+        ],
+        "patch": "",
+        "confidence": 0.75,
+        "root_cause": "Logical error in computation",
+        "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+      },
+      "validator_output": {
+        "bug_id": "BUG_019",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_019",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.72,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    },
+    {
+      "run_id": "run_35d46805",
+      "bug_id": "BUG_020",
+      "bug_type": "state_bug",
+      "complexity": "simple",
+      "selected_fixer": "StateFixer",
+      "tool_calls": 8,
+      "subagents_spawned": 3,
+      "locator_output": {
+        "bug_id": "BUG_020",
+        "candidate_files": [
+          {
+            "file": "ecommerce/checkout.py",
+            "confidence": 1.0
+          },
+          {
+            "file": "ecommerce/cart.py",
+            "confidence": 0.3125
+          },
+          {
+            "file": "ecommerce/__init__.py",
+            "confidence": 0.125
+          },
+          {
+            "file": "ecommerce/order.py",
+            "confidence": 0.0625
+          }
+        ],
+        "candidate_functions": [],
+        "reasoning": "Bug 'Checkout does not reject empty cart' (type=state_bug). Top file candidates: ecommerce/checkout.py, ecommerce/cart.py, ecommerce/__init__.py."
+      },
+      "fixer_output": {
+        "bug_id": "BUG_020",
+        "fixer_type": "StateFixer",
+        "files_modified": [
+          "ecommerce/checkout.py"
+        ],
+        "patch": "",
+        "confidence": 0.7,
+        "root_cause": "Incorrect state mutation",
+        "explanation": "Fixed state mutation to correctly accumulate rather than overwrite."
+      },
+      "validator_output": {
+        "bug_id": "BUG_020",
+        "validation_status": "FAIL",
+        "tests_before": {
+          "passed": 56,
+          "failed": 1
+        },
+        "tests_after": {
+          "passed": 56,
+          "failed": 1
+        },
+        "lint_status": "PASS",
+        "static_analysis_status": "PASS",
+        "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+      },
+      "judge_output": {
+        "bug_id": "BUG_020",
+        "fix_rate": 0.0,
+        "runtime_seconds": 1.71,
+        "token_usage": 0,
+        "files_modified": 1,
+        "patch_size_lines": 0,
+        "regressions": 0,
+        "judge_score": 4.0,
+        "status": "FAILURE"
+      },
+      "final_status": "FAILURE"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "run_id": "run_6c9b696e",
+  "bug_id": "BUG_006",
+  "bug_type": "logical_error",
+  "complexity": "simple",
+  "selected_fixer": "LogicFixer",
+  "tool_calls": 8,
+  "subagents_spawned": 3,
+  "locator_output": {
+    "bug_id": "BUG_006",
+    "candidate_files": [
+      {
+        "file": "ecommerce/tax.py",
+        "confidence": 1.0
+      },
+      {
+        "file": "ecommerce/checkout.py",
+        "confidence": 0.3333333333333333
+      }
+    ],
+    "candidate_functions": [],
+    "reasoning": "Bug 'Tax calculator uses addition instead of multiplication' (type=logical_error). Top file candidates: ecommerce/tax.py, ecommerce/checkout.py."
+  },
+  "fixer_output": {
+    "bug_id": "BUG_006",
+    "fixer_type": "LogicFixer",
+    "files_modified": [
+      "ecommerce/tax.py"
+    ],
+    "patch": "",
+    "confidence": 0.75,
+    "root_cause": "Logical error in computation",
+    "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+  },
+  "validator_output": {
+    "bug_id": "BUG_006",
+    "validation_status": "FAIL",
+    "tests_before": {
+      "passed": 50,
+      "failed": 7
+    },
+    "tests_after": {
+      "passed": 50,
+      "failed": 7
+    },
+    "lint_status": "PASS",
+    "static_analysis_status": "PASS",
+    "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/2 (0%)\nPass-to-pass: 50/50 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+  },
+  "judge_output": {
+    "bug_id": "BUG_006",
+    "fix_rate": 0.0,
+    "runtime_seconds": 1.74,
+    "token_usage": 0,
+    "files_modified": 1,
+    "patch_size_lines": 0,
+    "regressions": 0,
+    "judge_score": 4.0,
+    "status": "FAILURE"
+  },
+  "final_status": "FAILURE"
+}

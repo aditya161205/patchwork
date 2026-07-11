@@ -1,0 +1,74 @@
+{
+  "run_id": "run_28d6492b",
+  "bug_id": "BUG_004",
+  "bug_type": "dependency_config_bug",
+  "complexity": "simple",
+  "selected_fixer": "ConfigFixer",
+  "tool_calls": 8,
+  "subagents_spawned": 3,
+  "locator_output": {
+    "bug_id": "BUG_004",
+    "candidate_files": [
+      {
+        "file": "ecommerce/checkout.py",
+        "confidence": 1.0
+      },
+      {
+        "file": "ecommerce/shipping.py",
+        "confidence": 0.9166666666666666
+      },
+      {
+        "file": "ecommerce/order.py",
+        "confidence": 0.3333333333333333
+      },
+      {
+        "file": "ecommerce/__init__.py",
+        "confidence": 0.25
+      },
+      {
+        "file": "ecommerce/discount.py",
+        "confidence": 0.08333333333333333
+      }
+    ],
+    "candidate_functions": [],
+    "reasoning": "Bug 'Standard orders never qualify for free shipping' (type=dependency_config_bug). Top file candidates: ecommerce/checkout.py, ecommerce/shipping.py, ecommerce/order.py."
+  },
+  "fixer_output": {
+    "bug_id": "BUG_004",
+    "fixer_type": "ConfigFixer",
+    "files_modified": [
+      "ecommerce/checkout.py"
+    ],
+    "patch": "",
+    "confidence": 0.7,
+    "root_cause": "Incorrect configuration value",
+    "explanation": "Adjusted configuration constant to correct value."
+  },
+  "validator_output": {
+    "bug_id": "BUG_004",
+    "validation_status": "FAIL",
+    "tests_before": {
+      "passed": 56,
+      "failed": 1
+    },
+    "tests_after": {
+      "passed": 56,
+      "failed": 1
+    },
+    "lint_status": "PASS",
+    "static_analysis_status": "PASS",
+    "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+  },
+  "judge_output": {
+    "bug_id": "BUG_004",
+    "fix_rate": 0.0,
+    "runtime_seconds": 1.68,
+    "token_usage": 0,
+    "files_modified": 1,
+    "patch_size_lines": 0,
+    "regressions": 0,
+    "judge_score": 4.0,
+    "status": "FAILURE"
+  },
+  "final_status": "FAILURE"
+}

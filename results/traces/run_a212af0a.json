@@ -1,0 +1,74 @@
+{
+  "run_id": "run_a212af0a",
+  "bug_id": "BUG_009",
+  "bug_type": "logical_error",
+  "complexity": "simple",
+  "selected_fixer": "LogicFixer",
+  "tool_calls": 8,
+  "subagents_spawned": 3,
+  "locator_output": {
+    "bug_id": "BUG_009",
+    "candidate_files": [
+      {
+        "file": "ecommerce/checkout.py",
+        "confidence": 1.0
+      },
+      {
+        "file": "ecommerce/order.py",
+        "confidence": 0.6785714285714286
+      },
+      {
+        "file": "ecommerce/coupon.py",
+        "confidence": 0.5
+      },
+      {
+        "file": "ecommerce/discount.py",
+        "confidence": 0.32142857142857145
+      },
+      {
+        "file": "ecommerce/__init__.py",
+        "confidence": 0.2857142857142857
+      }
+    ],
+    "candidate_functions": [],
+    "reasoning": "Bug 'Order total calculation adds discount instead of subtracting' (type=logical_error). Top file candidates: ecommerce/checkout.py, ecommerce/order.py, ecommerce/coupon.py."
+  },
+  "fixer_output": {
+    "bug_id": "BUG_009",
+    "fixer_type": "LogicFixer",
+    "files_modified": [
+      "ecommerce/checkout.py"
+    ],
+    "patch": "",
+    "confidence": 0.75,
+    "root_cause": "Used addition instead of multiplication for percentage calculation",
+    "explanation": "Applied logic correction based on expected vs actual behavior analysis."
+  },
+  "validator_output": {
+    "bug_id": "BUG_009",
+    "validation_status": "FAIL",
+    "tests_before": {
+      "passed": 56,
+      "failed": 1
+    },
+    "tests_after": {
+      "passed": 56,
+      "failed": 1
+    },
+    "lint_status": "PASS",
+    "static_analysis_status": "PASS",
+    "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+  },
+  "judge_output": {
+    "bug_id": "BUG_009",
+    "fix_rate": 0.0,
+    "runtime_seconds": 1.68,
+    "token_usage": 0,
+    "files_modified": 1,
+    "patch_size_lines": 0,
+    "regressions": 0,
+    "judge_score": 4.0,
+    "status": "FAILURE"
+  },
+  "final_status": "FAILURE"
+}

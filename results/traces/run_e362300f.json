@@ -1,0 +1,66 @@
+{
+  "run_id": "run_e362300f",
+  "bug_id": "BUG_010",
+  "bug_type": "state_bug",
+  "complexity": "simple",
+  "selected_fixer": "StateFixer",
+  "tool_calls": 8,
+  "subagents_spawned": 3,
+  "locator_output": {
+    "bug_id": "BUG_010",
+    "candidate_files": [
+      {
+        "file": "ecommerce/inventory.py",
+        "confidence": 1.0
+      },
+      {
+        "file": "ecommerce/checkout.py",
+        "confidence": 0.8
+      },
+      {
+        "file": "ecommerce/__init__.py",
+        "confidence": 0.13333333333333333
+      }
+    ],
+    "candidate_functions": [],
+    "reasoning": "Bug 'Inventory reserve does not check stock availability' (type=state_bug). Top file candidates: ecommerce/inventory.py, ecommerce/checkout.py, ecommerce/__init__.py."
+  },
+  "fixer_output": {
+    "bug_id": "BUG_010",
+    "fixer_type": "StateFixer",
+    "files_modified": [
+      "ecommerce/inventory.py"
+    ],
+    "patch": "",
+    "confidence": 0.7,
+    "root_cause": "Incorrect state mutation",
+    "explanation": "Fixed state mutation to correctly accumulate rather than overwrite."
+  },
+  "validator_output": {
+    "bug_id": "BUG_010",
+    "validation_status": "FAIL",
+    "tests_before": {
+      "passed": 56,
+      "failed": 1
+    },
+    "tests_after": {
+      "passed": 56,
+      "failed": 1
+    },
+    "lint_status": "PASS",
+    "static_analysis_status": "PASS",
+    "validation_report": "Verdict: FAIL\nPatch applied: False\nFail-to-pass: 0/1 (0%)\nPass-to-pass: 56/56 (100%)\nRegressions: 0\nLint: PASS\nStatic analysis: PASS"
+  },
+  "judge_output": {
+    "bug_id": "BUG_010",
+    "fix_rate": 0.0,
+    "runtime_seconds": 1.68,
+    "token_usage": 0,
+    "files_modified": 1,
+    "patch_size_lines": 0,
+    "regressions": 0,
+    "judge_score": 4.0,
+    "status": "FAILURE"
+  },
+  "final_status": "FAILURE"
+}

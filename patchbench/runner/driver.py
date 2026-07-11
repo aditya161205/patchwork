@@ -1,23 +1,19 @@
-"""Benchmark driver — orchestrates full evaluation runs."""
+"""Benchmark driver — orchestrates full evaluation runs with trace persistence."""
 
 from __future__ import annotations
 
 import json
 import time
-import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from patchbench.schemas import Bug, JudgeOutput, RunTrace
 from patchbench.schemas.enums import RunStatus
 from patchbench.agents.orchestrator import Orchestrator
-from patchbench.agents.locator import Locator
-from patchbench.agents.fixer import get_fixer
-from patchbench.agents.validator import Validator
-from patchbench.agents.judge import Judge
 from patchbench.baselines.single_agent import SingleAgentBaseline
 from patchbench.baselines.chain import ChainBaseline
-from patchbench.metrics.scoring import fix_rate, overall_repair_score
+from patchbench.metrics.scoring import fix_rate, overall_repair_score, compute_all_metrics
+from patchbench.runner.approval import ApprovalGate
 
 
 @dataclass
@@ -30,76 +26,51 @@ class RunReport:
     fix_rate: float
     avg_score: float
     total_runtime: float
+    metrics: dict[str, float] = field(default_factory=dict)
     traces: list[RunTrace] = field(default_factory=list)
 
 
 class BenchmarkRunner:
-    """Drives the full benchmark evaluation.
+    """Drives the full benchmark evaluation with trace persistence.
 
     Supports three architectures:
-    - "multi_agent": Full pipeline with Orchestrator routing
+    - "multi_agent": Full pipeline with Orchestrator routing + retries
     - "chain": Sequential Locator -> generic Fixer
     - "single_agent": One-shot repair
+
+    Features:
+    - Persists traces at each pipeline step (incremental)
+    - Optional human approval gate
+    - Computes all 10 metrics
     """
 
-    def __init__(self, benchmark_dir: str | Path, timeout: int = 60) -> None:
+    def __init__(
+        self,
+        benchmark_dir: str | Path,
+        timeout: int = 60,
+        max_retries: int = 2,
+        approval_gate: ApprovalGate | None = None,
+        trace_dir: str | Path | None = None,
+    ) -> None:
         self.benchmark_dir = Path(benchmark_dir)
         self.timeout = timeout
+        self.max_retries = max_retries
+        self.approval_gate = approval_gate or ApprovalGate(auto_approve=True)
+        self.trace_dir = Path(trace_dir) if trace_dir else None
 
     def run_multi_agent(self, bugs: list[Bug]) -> RunReport:
         """Run the full multi-agent pipeline on all bugs."""
-        orchestrator = Orchestrator()
-        locator = Locator()
-        validator = Validator(timeout=self.timeout)
-        judge = Judge()
-
+        orchestrator = Orchestrator(max_retries=self.max_retries, timeout=self.timeout)
         traces: list[RunTrace] = []
         total_start = time.time()
 
         for bug in bugs:
-            run_id = f"run_{uuid.uuid4().hex[:8]}"
-            start = time.time()
-
             repo_path = str(self.benchmark_dir.parent / bug.repo_path)
-
-            # Classify and route
-            bug_type, complexity = orchestrator.classify(bug)
-            fixer_type = orchestrator.select_fixer(bug_type)
-            fixer = get_fixer(fixer_type)
-
-            # Locate
-            locator_output = locator.locate(bug, repo_path)
-
-            # Fix
-            fixer_output = fixer.fix(bug, locator_output, repo_path)
-
-            # Validate
-            validator_output = validator.validate(bug, fixer_output, repo_path)
-
-            # Judge
-            runtime = time.time() - start
-            judge_output = judge.evaluate(
-                bug, fixer_output, validator_output,
-                runtime_seconds=round(runtime, 2),
-                token_usage=0,
-            )
-
-            # Create trace
-            final_status = judge_output.status
-            trace = orchestrator.create_trace(
-                run_id=run_id,
-                bug=bug,
-                fixer_type=fixer_type,
-                complexity=complexity,
-                locator_output=locator_output,
-                fixer_output=fixer_output,
-                validator_output=validator_output,
-                judge_output=judge_output,
-                tool_calls=4,
-                subagents_spawned=3,
-                final_status=final_status,
-            )
+            trace = orchestrator.run(bug, repo_path)
             traces.append(trace)
+
+            # Persist trace incrementally
+            self._persist_trace(trace)
 
         total_runtime = time.time() - total_start
         judge_outputs = [t.judge_output for t in traces if t.judge_output]
@@ -111,15 +82,13 @@ class BenchmarkRunner:
             fix_rate=fix_rate(judge_outputs),
             avg_score=overall_repair_score(judge_outputs),
             total_runtime=round(total_runtime, 2),
+            metrics=compute_all_metrics(judge_outputs),
             traces=traces,
         )
 
     def run_chain(self, bugs: list[Bug]) -> RunReport:
         """Run the chain baseline on all bugs."""
         chain = ChainBaseline(timeout=self.timeout)
-        judge = Judge()
-
-        traces: list[RunTrace] = []
         judge_outputs: list[JudgeOutput] = []
         total_start = time.time()
 
@@ -147,6 +116,7 @@ class BenchmarkRunner:
             fix_rate=fix_rate(judge_outputs),
             avg_score=overall_repair_score(judge_outputs),
             total_runtime=round(total_runtime, 2),
+            metrics=compute_all_metrics(judge_outputs),
         )
 
     def run_single_agent(self, bugs: list[Bug]) -> RunReport:
@@ -179,10 +149,19 @@ class BenchmarkRunner:
             fix_rate=fix_rate(judge_outputs),
             avg_score=overall_repair_score(judge_outputs),
             total_runtime=round(total_runtime, 2),
+            metrics=compute_all_metrics(judge_outputs),
         )
 
+    def _persist_trace(self, trace: RunTrace) -> None:
+        """Save a single trace to disk (incremental persistence)."""
+        if not self.trace_dir:
+            return
+        self.trace_dir.mkdir(parents=True, exist_ok=True)
+        trace_path = self.trace_dir / f"{trace.run_id}.json"
+        trace_path.write_text(json.dumps(trace.model_dump(), indent=2, default=str))
+
     def save_report(self, report: RunReport, output_path: str | Path) -> None:
-        """Save a run report to JSON."""
+        """Save a full run report to JSON."""
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -193,6 +172,7 @@ class BenchmarkRunner:
             "fix_rate": report.fix_rate,
             "avg_score": report.avg_score,
             "total_runtime": report.total_runtime,
+            "metrics": report.metrics,
             "traces": [t.model_dump() for t in report.traces] if report.traces else [],
         }
         output_path.write_text(json.dumps(data, indent=2, default=str))
